@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#121b28">
+  <title>Mini Quiz</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.webmanifest">
+</head>
+<body>
+  <div id="app" class="container">
+    <header class="topbar">
+      <div class="brand">⚡ Mini Quiz</div>
+      <div class="progress">
+        <div class="bar" id="bar"></div>
+      </div>
+      <div class="top-stats">
+        <div class="counter"><span id="count">0</span>/<span id="total">0</span></div>
+        <div class="best-badge" id="best">En iyi: -</div>
+      </div>
+    </header>
+
+    <section class="card start-card" id="start">
+      <h1>Hazırsan kategorini seç</h1>
+      <p class="start-text">Mini Quiz'e başlamak için aşağıdan bir kategori seç ve ardından başlat.</p>
+      <div class="category-grid" id="category-list"></div>
+
+      <div class="start-settings">
+        <label class="setting-toggle">
+          <input id="shuffle" type="checkbox" checked aria-describedby="shuffle-hint">
+          <span class="setting-switch" aria-hidden="true"></span>
+          <span class="setting-title">Karıştır <span class="setting-state" id="shuffle-state">Açık</span></span>
+          <span class="setting-hint" id="shuffle-hint">Soru sırasını karıştır</span>
+        </label>
+
+        <label class="setting-number">
+          <span class="setting-title">Soru sayısı</span>
+          <input id="question-count" type="number" inputmode="numeric" min="1" step="1" value="10" aria-describedby="question-count-hint">
+          <span class="setting-hint" id="question-count-hint">Kategoriye göre üst sınır uygulanır</span>
+        </label>
+      </div>
+
+      <div class="start-meta">
+        <p id="start-info">Bir kategori seç ve başla!</p>
+        <button id="begin" class="btn" disabled>Quiz'i Başlat</button>
+      </div>
+    </section>
+
+    <main class="card hidden" id="card">
+      <h1 id="question">Hazırsan kategorini seç!</h1>
+      <div id="choices" class="choices"></div>
+      <div class="meta">
+        <button id="skip" class="btn ghost">Pas Geç</button>
+        <div id="timer" class="timer">20</div>
+      </div>
+    </main>
+
+    <section class="card hidden result-card" id="result">
+      <div class="result-emoji" id="result-emoji">🎉</div>
+      <h2 class="result-title" id="result-title">Harika!</h2>
+      <div class="result-percent"><span id="result-percent">0</span>%</div>
+      <p class="result-detail" id="result-detail">Skorun: 0/0</p>
+      <p class="result-note" id="result-note">Yeni rekor için tekrar dene!</p>
+      <div class="result-actions">
+        <button id="play-again" class="btn">Tekrar Oyna</button>
+        <button id="to-categories" class="btn ghost">Kategoriye Dön</button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <button id="restart" class="btn">Baştan Başla</button>
+      <button id="sound" class="icon-btn sound-toggle" type="button" aria-pressed="true" aria-label="Sesi kapat">
+        <span class="sound-icon" id="sound-icon">🔊</span>
+      </button>
+      <label class="theme-toggle">
+        <input id="theme" type="checkbox">
+        <span>🌙</span>
+      </label>
+      <button id="share" class="btn ghost">Skoru Paylaş</button>
+    </footer>
+  </div>
+
+  <canvas id="confetti"></canvas>
+
+  <script type="application/json" id="data">
+  {
+    "Genel": [
+      {"q":"Türkiye'nin başkenti hangisidir?","a":["Ankara","İstanbul","İzmir","Bursa"],"c":"Ankara"},
+      {"q":"Işık yılı birimi neyi ölçer?","a":["Zaman","Hız","Mesafe","Sıcaklık"],"c":"Mesafe"},
+      {"q":"Dünya'nın uydusu?","a":["Ay","Europa","Titan","Io"],"c":"Ay"},
+      {"q":"Pi sayısı yaklaşık?","a":["2.14","3.14","1.62","2.71"],"c":"3.14"},
+      {"q":"Elektrik akımı birimi?","a":["Volt","Ohm","Amper","Watt"],"c":"Amper"},
+      {"q":"En büyük okyanus?","a":["Atlas","Hint","Buzullar","Pasifik"],"c":"Pasifik"},
+      {"q":"Cumhuriyet ilan yılı?","a":["1919","1920","1923","1924"],"c":"1923"},
+      {"q":"Yetişkin kemik sayısı?","a":["106","206","256","306"],"c":"206"},
+      {"q":"En uzun nehir?","a":["Nil","Amazon","Yangtze","Mississippi"],"c":"Nil"},
+      {"q":"En yüksek dağ?","a":["K2","Kangchenjunga","Everest","Lhotse"],"c":"Everest"}
+    ],
+    "Bilim": [
+      {"q":"Su molekülü hangi iki elementten oluşur?","a":["Hidrojen ve oksijen","Hidrojen ve azot","Oksijen ve karbon","Azot ve karbon"],"c":"Hidrojen ve oksijen"},
+      {"q":"DNA'nın açılımı nedir?","a":["Deoksiribonükleik asit","Dinamik nükleer asit","Deoksiribo nükleoprotein","Dizilim nükleik asit"],"c":"Deoksiribonükleik asit"},
+      {"q":"Güneş'e en yakın gezegen hangisidir?","a":["Merkür","Venüs","Dünya","Mars"],"c":"Merkür"},
+      {"q":"Yerçekimi kanununu ortaya koyan bilim insanı kimdir?","a":["Isaac Newton","Albert Einstein","Galileo Galilei","Nikola Tesla"],"c":"Isaac Newton"},
+      {"q":"Fotosentez bitki hücresinde hangi organelde gerçekleşir?","a":["Kloroplast","Mitokondri","Ribozom","Lizozom"],"c":"Kloroplast"},
+      {"q":"İnsan vücudunda en bol bulunan mineral hangisidir?","a":["Kalsiyum","Demir","Potasyum","Sodyum"],"c":"Kalsiyum"},
+      {"q":"Atom numarası 6 olan element hangisidir?","a":["Karbon","Oksijen","Azot","Flor"],"c":"Karbon"}
+    ],
+    "Tarih": [
+      {"q":"İstanbul'un fethi hangi yıl gerçekleşti?","a":["1453","1526","1071","1299"],"c":"1453"},
+      {"q":"Magna Carta hangi ülkenin kralı tarafından imzalandı?","a":["İngiltere","Fransa","İspanya","Almanya"],"c":"İngiltere"},
+      {"q":"Sümerler hangi yazı sistemini kullanmıştır?","a":["Çivi yazısı","Hiyeroglif","Latin alfabesi","Runik yazı"],"c":"Çivi yazısı"},
+      {"q":"Türk Kurtuluş Savaşı'nı başlatan olay hangisidir?","a":["Mustafa Kemal'in Samsun'a çıkışı","Lozan Antlaşması","Cumhuriyet'in ilanı","Sakarya Meydan Muharebesi"],"c":"Mustafa Kemal'in Samsun'a çıkışı"},
+      {"q":"Roma İmparatoru Julius Caesar nerede öldürüldü?","a":["Roma Senatosu","Pompeii","Kapitol Tepesi","Brütüs'ün evi"],"c":"Roma Senatosu"},
+      {"q":"Selçuklu Devleti'nin kurucusu kimdir?","a":["Tuğrul Bey","Alparslan","Melikşah","Sultan Sencer"],"c":"Tuğrul Bey"},
+      {"q":"Mısır'ın ünlü kadın hükümdarı Kleopatra hangi uygarlığın son lideridir?","a":["Ptolemaios Hanedanı","Hitit İmparatorluğu","Asur İmparatorluğu","Ahameniş İmparatorluğu"],"c":"Ptolemaios Hanedanı"}
+    ]
+  }
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
